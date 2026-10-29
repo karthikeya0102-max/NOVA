@@ -7,6 +7,17 @@
 4. Save `.env` and double-click `start.bat` again.
 5. Open http://127.0.0.1:8000 and use the live provider test buttons.
 
+## Run the cinematic Next.js frontend
+Keep the FastAPI server running at http://127.0.0.1:8000. In a second PowerShell terminal:
+
+```powershell
+cd C:\path\to\NOVA-Complete\frontend
+corepack pnpm install --frozen-lockfile
+corepack pnpm dev
+```
+
+Open http://localhost:3000. The frontend connects to the local backend on startup through a same-origin Next.js API rewrite, so no FastAPI CORS changes are needed. To use a different backend, enter its URL in Settings; direct cross-origin connections may require that backend to allow the frontend origin. To point the proxy at a different backend, set `NOVA_API_BASE_URL` before starting the development server, or before building for production. The original `nova-system-development` folder is kept separately from this integrated copy.
+
 ## Included
 - Responsive chat UI
 - NVIDIA Build hosted inference / Nemotron chat
