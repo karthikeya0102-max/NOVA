@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
-export type CoreState = 'idle' | 'listening' | 'thinking' | 'responding' | 'error'
+export type CoreState = 'idle' | 'listening' | 'wakeDetected' | 'recognized' | 'thinking' | 'responding' | 'speaking' | 'error'
 
 function Core({ state, reduced }: { state: CoreState; reduced: boolean }) {
   const group = useRef<THREE.Group>(null)
@@ -21,13 +21,13 @@ function Core({ state, reduced }: { state: CoreState; reduced: boolean }) {
   }, [])
   useFrame(({ clock }, delta) => {
     if (!group.current || reduced) return
-    const speed = state === 'thinking' ? .48 : state === 'listening' ? .24 : .065
+    const speed = state === 'thinking' ? .48 : state === 'listening' ? .24 : state === 'speaking' ? .36 : .065
     group.current.rotation.y += delta * speed
     group.current.rotation.z = Math.sin(clock.elapsedTime * .15) * .08
     const pulse = state === 'idle' ? .008 : .035
     group.current.scale.setScalar(1 + Math.sin(clock.elapsedTime * (state === 'responding' ? 6 : 2)) * pulse)
   })
-  const color = state === 'error' ? '#ff8c9d' : state === 'listening' ? '#b0f9ff' : '#38dcf5'
+  const color = state === 'error' ? '#ff8c9d' : state === 'listening' || state === 'wakeDetected' || state === 'recognized' || state === 'speaking' ? '#b0f9ff' : '#38dcf5'
   return <group ref={group} rotation={[.15, 0, -.1]}>
     <mesh><sphereGeometry args={[1.43, 48, 48]} /><meshBasicMaterial color="#02121e" /></mesh>
     <mesh><icosahedronGeometry args={[1.46, 3]} /><meshBasicMaterial color={color} wireframe transparent opacity={.14} /></mesh>

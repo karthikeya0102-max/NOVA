@@ -16,7 +16,9 @@ corepack pnpm install --frozen-lockfile
 corepack pnpm dev
 ```
 
-Open http://localhost:3000. The frontend connects to the local backend on startup through a same-origin Next.js API rewrite, so no FastAPI CORS changes are needed. To use a different backend, enter its URL in Settings; direct cross-origin connections may require that backend to allow the frontend origin. To point the proxy at a different backend, set `NOVA_API_BASE_URL` before starting the development server, or before building for production. The original `nova-system-development` folder is kept separately from this integrated copy.
+Open http://localhost:3000. The frontend connects to the local backend on startup through a same-origin Next.js API route proxy, which also forwards mission SSE events without buffering; no FastAPI CORS changes are needed. To use a different backend, enter its URL in Settings; direct cross-origin connections may require that backend to allow the frontend origin. To point the proxy at a different backend, set `NOVA_API_BASE_URL` before starting the development server or production server. The original `nova-system-development` folder is kept separately from this integrated copy.
+
+The frontend includes browser-based voice input/output and a single-task Mission Mode. Missions use the `/api/mission` SSE endpoint to drive an interactive 3D task graph from backend-confirmed context preparation, actual Tavily search activity when research is enabled, model inference, and the final answer. Ordinary chat continues to use `/api/chat`. Voice recognition requires explicit confirmation, microphone permission, and a visible open page; the browser may process microphone audio using its speech service. NOVA receives recognized text, not microphone audio. “Hey NOVA” wake listening is configurable, uses fresh browser recognition sessions with bounded recovery, and is not a background service. Wake listening pauses after a command and while NOVA speaks to prevent audio feedback; use the microphone for one-shot voice input if wake recognition is unsupported.
 
 ## Included
 - Responsive chat UI
