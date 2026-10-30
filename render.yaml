@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: nova-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips=*
+    healthCheckPath: /healthz
+    autoDeploy: false
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: NOVA_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: NOVA_CORS_ORIGINS
+        sync: false
+      - key: NEBIUS_API_KEY
+        sync: false
+      - key: NEBIUS_MODEL
+        value: nvidia/nemotron-3.5-bolt-e4b
+      - key: NEBIUS_BASE_URL
+        value: https://integrate.api.nvidia.com/v1
+      - key: REQUEST_TIMEOUT_SECONDS
+        value: "45"

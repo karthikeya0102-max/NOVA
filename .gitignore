@@ -3,3 +3,15 @@
 __pycache__/
 *.py[cod]
 data/*.db*
+data/desktop/
+models/*.onnx
+wakeword-samples/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Local wake-word model files
+models/*.onnx
+models/*.onnx.data

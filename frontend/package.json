@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:mission": "node --experimental-strip-types --test lib/mission-events.test.ts lib/mission-mode.test.ts",
+    "test:security": "node --experimental-strip-types --test lib/nova-api.security.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
     "@react-three/fiber": "^9.8.2",
+    "@supabase/supabase-js": "^2.118.0",
     "@vercel/analytics": "1.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

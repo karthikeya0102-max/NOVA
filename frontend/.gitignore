@@ -15,3 +15,7 @@ node_modules
 .next/
 .DS_Store
 *.tsbuildinfo
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
