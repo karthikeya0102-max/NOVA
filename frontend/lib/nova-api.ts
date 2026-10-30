@@ -29,8 +29,13 @@ export interface BackendStatus {
 }
 
 export async function novaRequest<T>(base: string, path: string, body?: unknown, method?: string, options?: { signal?: AbortSignal }): Promise<T> {
-  if (!base) throw new Error('Backend not connected. Open Settings to connect your local FastAPI server. Your message has not been sent.')
-  const url = new URL(base)
+  const requestBase = base || (
+    typeof window !== 'undefined' && isSupabaseConfigured()
+      ? window.location.origin
+      : ''
+  )
+  if (!requestBase) throw new Error('Backend not connected. Open Settings to connect your local FastAPI server. Your message has not been sent.')
+  const url = new URL(requestBase)
   if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Use an HTTP or HTTPS backend URL without credentials.')
   if (isSupabaseConfigured() && typeof window !== 'undefined' && url.origin !== window.location.origin) {
     throw new Error('Authenticated NOVA requests must use the same-origin backend proxy.')
@@ -39,7 +44,7 @@ export async function novaRequest<T>(base: string, path: string, body?: unknown,
   try {
     const timeoutSignal = AbortSignal.timeout(60000)
     const signal = options?.signal ? AbortSignal.any([options.signal, timeoutSignal]) : timeoutSignal
-    response = await fetch(`${base.replace(/\/$/, '')}/api/${path}`, {
+    response = await fetch(`${requestBase.replace(/\/$/, '')}/api/${path}`, {
       method: method || (body ? 'POST' : 'GET'),
       headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...await authorizationHeaders() },
       body: body ? JSON.stringify(body) : undefined,
@@ -217,8 +222,13 @@ export async function novaMission(
   signal: AbortSignal,
   onEvent: (event: MissionEvent) => void,
 ): Promise<ChatReply> {
-  if (!base) throw new Error('Backend not connected. Open Settings to connect your local FastAPI server. Your mission has not been sent.')
-  const url = new URL(base)
+  const requestBase = base || (
+    typeof window !== 'undefined' && isSupabaseConfigured()
+      ? window.location.origin
+      : ''
+  )
+  if (!requestBase) throw new Error('Backend not connected. Open Settings to connect your local FastAPI server. Your mission has not been sent.')
+  const url = new URL(requestBase)
   if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Use an HTTP or HTTPS backend URL without credentials.')
   if (isSupabaseConfigured() && typeof window !== 'undefined' && url.origin !== window.location.origin) {
     throw new Error('Authenticated NOVA requests must use the same-origin backend proxy.')
@@ -226,7 +236,7 @@ export async function novaMission(
 
   let response: Response
   try {
-    response = await fetch(`${base.replace(/\/$/, '')}/api/mission`, {
+    response = await fetch(`${requestBase.replace(/\/$/, '')}/api/mission`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
