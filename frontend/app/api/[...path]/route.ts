@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
-const responseHopByHopHeaders = ['connection', 'content-length', 'keep-alive', 'transfer-encoding']
+const responseHopByHopHeaders = ['connection', 'content-encoding', 'content-length', 'keep-alive', 'transfer-encoding']
 const maxRequestBytes = 65536
 
 async function proxy(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
